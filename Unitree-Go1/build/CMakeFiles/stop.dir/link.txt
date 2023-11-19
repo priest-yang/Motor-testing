@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++11 -O3 CMakeFiles/stop.dir/example/stop.cpp.o CMakeFiles/stop.dir/example/preprogrammed.cpp.o -o stop   -L/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/lib  -Wl,-rpath,/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/lib -lUnitreeMotorSDK_M80106_Linux64 

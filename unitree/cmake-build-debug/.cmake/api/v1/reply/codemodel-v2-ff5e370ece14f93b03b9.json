@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.2"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "UnitreeMotorSDK_M80106",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "motorctrl::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-motorctrl-Debug-708676ebcd46c9e9c08a.json",
+					"name" : "motorctrl",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "stop::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-stop-Debug-2cd0a203d8eb40dbbf62.json",
+					"name" : "stop",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/xuzhekai/FA23/motors/Motor-testing/unitree/cmake-build-debug",
+		"source" : "/home/xuzhekai/FA23/motors/Motor-testing/unitree"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}

@@ -1,0 +1,7 @@
+# ninja log v5
+1	266	1700350911788361610	CMakeFiles/stop.dir/example/stop.cpp.o	4358b5148c6b6cd1
+267	317	1700350911836362053	stop	79c76f83b11e288b
+1	18	1700350911536359287	CMakeFiles/stop.dir/example/preprogrammed.cpp.o	1a359905151a33dd
+1	262	1700350902416275078	CMakeFiles/motorctrl.dir/example/main.cpp.o	d909f93822a4193d
+1	12	1700335501873963542	CMakeFiles/motorctrl.dir/example/preprogrammed.cpp.o	af955551dbd6a798
+262	315	1700350902468275559	motorctrl	e3f07b3f090f00bc

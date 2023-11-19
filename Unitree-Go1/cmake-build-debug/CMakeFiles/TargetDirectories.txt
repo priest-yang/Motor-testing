@@ -1,4 +1,0 @@
-/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/cmake-build-debug/CMakeFiles/motorctrl.dir
-/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/cmake-build-debug/CMakeFiles/stop.dir
-/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/xuzhekai/FA23/motors/Unitree_motor_SDK_Linux/cmake-build-debug/CMakeFiles/rebuild_cache.dir
