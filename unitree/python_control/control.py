@@ -43,7 +43,7 @@ def stop_motor():
 
 def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQUE, torqueStep: float = TORQUE_STEP, \
                       minSpeed: float = MIN_SPEED, maxSpeed: float = MAX_SPEED, speedStep: float = SPEED_STEP, \
-                        runtime : int = 3) -> dict:
+                        runtime : int = 3):
     # Path: unitree/python_control/control.py
     import pyvisa
     import time
@@ -102,11 +102,13 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                 result = pd.concat([result, cur_df], ignore_index=True)
 
                 time.sleep(.5)
+
+    siglent.close()
                 
 
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     motor_test_runner()
 
 
