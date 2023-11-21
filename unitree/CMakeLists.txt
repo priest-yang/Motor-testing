@@ -20,3 +20,7 @@ add_executable(stop example/stop.cpp
 target_link_libraries(stop libUnitreeMotorSDK_M80106_Linux64.so)
 
 
+add_executable(PID_helper example/PID_helper.cpp
+	example/preprogrammed.cpp
+        example/preprogrammed.h)
+target_link_libraries(PID_helper libUnitreeMotorSDK_M80106_Linux64.so)

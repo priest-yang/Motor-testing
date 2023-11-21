@@ -1,6 +1,6 @@
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
-#include "preprogrammed.h"
+//#include "preprogrammed.h"
 
 
 
@@ -47,10 +47,11 @@ int flag = 0;
       cmd.id    = 0;
       cmd.mode  = 1;
       cmd.K_P   = 0.0;
-      cmd.K_W   = 0.05;
+      cmd.K_W   = 0.09;
       cmd.Pos   = 0.0;
-      cmd.W     =atof(argv[1]);
-      cmd.T     = 0.02;
+//      cmd.W     =atof(argv[1]);
+    cmd.W     =50;
+      cmd.T     = 0.0;
     serial.sendRecv(&cmd,&data);
 //torque mode
       cmd.id    = 1;
@@ -59,7 +60,7 @@ int flag = 0;
       cmd.K_W   = 0.0;
       cmd.Pos   = 0.0;
       cmd.W     = 0.0;
-      cmd.T     = 0.5;
+      cmd.T     = 0.0;
 
       serial.sendRecv(&cmd,&data);
       usleep(2000000);
