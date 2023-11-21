@@ -10,7 +10,7 @@ import re
 GEAR_RATIO = 6.33
 
 # motor0: driving motor, speed mode
-motor0 = defaultdict({
+motor0 = defaultdict(lambda : {
     'id'   : 0,
     'K_P'  : 0.0,
     'K_W'  : 0.0,
@@ -20,7 +20,7 @@ motor0 = defaultdict({
 })
 
 # motor1: testing motor, torque mode
-motor1 = defaultdict({
+motor1 = defaultdict(lambda : {
     'id'   : 1,
     'K_P'  : 0.0,
     'K_W'  : 0.0,
