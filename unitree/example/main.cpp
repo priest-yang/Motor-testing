@@ -81,7 +81,7 @@ int flag = 0;
           std::cout <<  "motor.Temp: "   << data.Temp   << " ℃"  << std::endl;
           std::cout <<  "motor.W: "      << data.W      << " rad/s"<<std::endl;
           std::cout <<  "motor.T: "      << data.T      << " N.m" << std::endl;
-          
+
 
 //          std::cout <<  "motor.MError: " << data.MError <<  std::endl;
 //          std::cout <<  std::endl;

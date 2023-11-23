@@ -42,21 +42,32 @@ def stop_motor():
     # print(output.stdout)
     print("stop motor (not implemented)")
 
+
 def adjust_PD(current_speed):
     '''
     Adjust K_P and K_W according to current speed
     Input: current motor speed
     Output: True if K_P and K_W are adjusted, False otherwise
     '''
-    if abs((current_speed - motor0['W']) / motor0['W']) > 0.2:
-        motor0['K_W'] = motor0['K_W'] + 0.5
+    if abs((current_speed - motor0['W']) / motor0['W']) > 0.3 and current_speed - motor0['W'] > 3:
+        cur_kw = motor0['K_W']
+        motor0['K_W'] = motor0['K_W'] + 0.01
+        print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
+
+        _ = subprocess.run(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']), ], capture_output=True, text=True)
         return True
     else:
         return False
 
 
-def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQUE, torqueStep: float = TORQUE_STEP, \
-                      minSpeed: float = MIN_SPEED, maxSpeed: float = MAX_SPEED, speedStep: float = SPEED_STEP, \
+def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQUE, torqueStep: float = TORQUE_STEP,
+                      minSpeed: float = MIN_SPEED, maxSpeed: float = MAX_SPEED, speedStep: float = SPEED_STEP,
                       runtime: int = 3):
     # Path: unitree/python_control/control.py
     import pyvisa
@@ -82,7 +93,6 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
 
         for torque in np.arange(minTorque, maxTorque, torqueStep):
 
-            
             print(f"speed: {cur_speed}, torque: {torque}")
 
             motor1['T'] = torque
@@ -118,16 +128,14 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     print(output.stdout)
                     stop_motor()
 
-                
                 adjust_flag = adjust_PD(speed)
 
-                if not adjust_flag: # if K_P and K_W are not adjusted, then read voltage and record data
+                if not adjust_flag:  # if K_P and K_W are not adjusted, then read voltage and record data
                     cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
                     result = pd.concat([result, cur_df], ignore_index=True)
+                else:
+                    time.sleep(3)
 
-                time.sleep(.5)
-            
-            
         print('Writting file to csv...')
         result.to_csv('../data/go1.csv')
 
