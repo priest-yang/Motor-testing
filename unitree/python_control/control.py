@@ -49,7 +49,8 @@ def adjust_PD(current_speed):
     Input: current motor speed
     Output: True if K_P and K_W are adjusted, False otherwise
     '''
-    if abs((current_speed - motor0['W']) / motor0['W']) > 0.3 and current_speed - motor0['W'] > 3:
+    global motor0
+    if abs((current_speed - motor0['W']) / motor0['W']) > 0.2 and current_speed - motor0['W'] > 3:
         cur_kw = motor0['K_W']
         motor0['K_W'] = motor0['K_W'] + 0.01
         print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
