@@ -75,7 +75,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                 time.sleep(.5)
 
         print('Writting file to csv...')
-        result.to_csv('../data/go1.csv')
+        result.to_csv('../data/go1_fdbk_fdfw.csv')
 
 
 

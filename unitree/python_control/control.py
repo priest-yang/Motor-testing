@@ -9,6 +9,13 @@ import re
 
 GEAR_RATIO = 6.33
 
+MIN_TORQUE = 0.1
+MAX_TORQUE = 0.5
+TORQUE_STEP = 0.05
+MIN_SPEED = 2 * GEAR_RATIO
+MAX_SPEED = 5 * GEAR_RATIO
+SPEED_STEP = 1 * GEAR_RATIO
+
 # motor0: driving motor, speed mode
 motor0 = {
     'id': 0,
@@ -17,7 +24,7 @@ motor0 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
-    'PID': 1,
+    'PID': 0,
 }
 
 # motor1: testing motor, torque mode
@@ -30,14 +37,6 @@ motor1 = {
     'T': 0.0,
     'PID': 0,
 }
-
-MIN_TORQUE = 0.1
-MAX_TORQUE = 0.5
-TORQUE_STEP = 0.05
-MIN_SPEED = 2 * GEAR_RATIO
-MAX_SPEED = 5 * GEAR_RATIO
-SPEED_STEP = 1 * GEAR_RATIO
-
 
 def stop_motor():
     # output = subprocess.run(["../build/stop"], capture_output=True, text=True)
