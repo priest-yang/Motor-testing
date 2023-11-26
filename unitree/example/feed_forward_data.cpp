@@ -29,6 +29,9 @@ int main(int argc, char ** argv){
     cmd.T     = 0.0;
     serial.sendRecv(&cmd,&data);
 
+    // header
+    myfile << "T,W\n";
+
     for(float i = 0.0; i < 2.0;i+= 0.01){
         cmd.T = i;
 
@@ -36,8 +39,8 @@ int main(int argc, char ** argv){
 
         usleep(5000000);
         serial.sendRecv(&cmd,&data);
-        myfile << cmd.T << ", " << data.W << ", \n";
-        cout  << cmd.T << ", " << data.W << ", \n";
+        myfile << cmd.T << ", " << data.W << "\n";
+        cout  << cmd.T << ", " << data.W << "\n";
 
         
 //        cout << cmd.T << endl;
