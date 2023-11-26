@@ -111,6 +111,17 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['W']),
                                          str(motor1['T']), 
                                          str(motor1['PID'])], capture_output=True, text=True)
+                
+                time.sleep(0.3)
+                # re-run motor 0 PID
+                _ = subprocess.run(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
 
                 match = re.search(pattern, output.stdout)
 
