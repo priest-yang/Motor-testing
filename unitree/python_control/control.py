@@ -78,7 +78,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
     import subprocess
 
     rm = pyvisa.ResourceManager()
-    # print()rm.list_resources())
+    print(rm.list_resources())
     siglent = rm.open_resource(rm.list_resources()[0])
     result = pd.DataFrame(columns=['input_speed', 'input_torque', 'voltage', 'output_speed', 'output_torque', 'temp'])
     pattern = r"[\s\S]+ ([-|\d]+)[\s\S]+ ([-|\d.]+)[\s\S]+ ([-|\d.]+)"
