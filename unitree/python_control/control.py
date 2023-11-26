@@ -35,7 +35,7 @@ motor1 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
-    'PID': 0,
+    'PID': 1,
 }
 
 def stop_motor():
