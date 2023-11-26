@@ -24,7 +24,7 @@ motor0 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
-    'PID': 0,
+    'PID': 1,
 }
 
 # motor1: testing motor, torque mode
@@ -142,7 +142,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     time.sleep(3)
 
         print('Writting file to csv...')
-        result.to_csv('../data/go1_nofeedforward.csv')
+        result.to_csv('../data/go1_with_all.csv')
 
     siglent.close()
 
