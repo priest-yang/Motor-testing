@@ -56,7 +56,10 @@ int flag = 0;
       int use_PID = atoi(argv[7]);
       if(use_PID == 1){
           //use PID to control
-          PID_control(cmd, data, serial);
+          bool is_done = PID_control(cmd, data, serial);
+//          if(is_done){
+//              std::cout << "is done\n";
+//          }
       } else{
           serial.sendRecv(&cmd,&data);
       }
@@ -69,7 +72,7 @@ int flag = 0;
 //      cmd.Pos   = 0.0;
 //      cmd.W     = 0.0;
 //      cmd.T     = 0.0;
-      usleep(50000);
+      usleep(2000000);
       serial.sendRecv(&cmd,&data);
 
 
