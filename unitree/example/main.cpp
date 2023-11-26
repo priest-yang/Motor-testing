@@ -1,6 +1,6 @@
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
-//#include "preprogrammed.h"
+#include "preprogrammed.h"
 
 
 
@@ -52,7 +52,15 @@ int flag = 0;
 //      cmd.W     =atof(argv[1]);
     cmd.W     =atof(argv[5]);
       cmd.T     = atof(argv[6]);
-    serial.sendRecv(&cmd,&data);
+
+      int use_PID = atoi(argv[7]);
+      if(use_PID == 1){
+          //use PID to control
+          PID_control(cmd, data, serial);
+      } else{
+          serial.sendRecv(&cmd,&data);
+      }
+
 //torque mode
 //      cmd.id    = 1;
 //      cmd.mode  = 1;

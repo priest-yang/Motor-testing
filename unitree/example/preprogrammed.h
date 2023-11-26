@@ -5,6 +5,15 @@
 #ifndef UNITREEMOTORSDK_M80106_PREPROGRAMMED_H
 #define UNITREEMOTORSDK_M80106_PREPROGRAMMED_H
 
+#include "serialPort/SerialPort.h"
+#include <unistd.h>
+
+double K_I = 0.01;
+double K_D = 0.01;
+double Tor_ff = 0.092;
+
+bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port);
+
 
 
 #endif //UNITREEMOTORSDK_M80106_PREPROGRAMMED_H
