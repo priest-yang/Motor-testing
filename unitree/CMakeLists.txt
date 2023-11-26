@@ -26,5 +26,10 @@ add_executable(PID_helper example/PID_helper.cpp
 target_link_libraries(PID_helper libUnitreeMotorSDK_M80106_Linux64.so)
 
 
-add_executable(feed_forward example/feed_forward_data.cpp)
-target_link_libraries(PID_helper libUnitreeMotorSDK_M80106_Linux64.so)
+add_executable(feed_forward example/feed_forward_data.cpp
+		)
+target_link_libraries(feed_forward libUnitreeMotorSDK_M80106_Linux64.so)
+
+add_executable(PID_controller example/PID_controller.cpp
+)
+target_link_libraries(PID_controller libUnitreeMotorSDK_M80106_Linux64.so)
