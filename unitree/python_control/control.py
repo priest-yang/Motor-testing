@@ -113,8 +113,9 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['PID'])], capture_output=True, text=True)
                 
                 time.sleep(0.3)
+                
                 # re-run motor 0 PID
-                _ = subprocess.run(["../build/motorctrl",
+                driving_output = subprocess.run(["../build/motorctrl",
                             str(motor0['id']),
                             str(motor0['K_P']),
                             str(motor0['K_W']),
@@ -122,12 +123,16 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                             str(motor0['W']),
                             str(motor0['T']), 
                             str(motor0['PID'])], capture_output=True, text=True)
+                
 
+                
                 match = re.search(pattern, output.stdout)
+                match_driving_output = re.search(pattern, driving_output.stdout)
 
-                if match:
+                if match and match_driving_output:
                     temp = int(match.group(1))
-                    speed = float(match.group(2))
+                    # speed = float(match.group(2))
+                    speed = float(match_driving_output.group(2))
                     torque = float(match.group(3))
 
                     result_dict = {'temp': temp, 'output_speed': speed, 'output_torque': torque}
