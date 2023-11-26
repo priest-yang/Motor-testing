@@ -17,6 +17,7 @@ motor0 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
+    'PID': 1,
 }
 
 # motor1: testing motor, torque mode
@@ -27,6 +28,7 @@ motor1 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
+    'PID': 0,
 }
 
 MIN_TORQUE = 0.5
@@ -61,7 +63,8 @@ def adjust_PD(current_speed):
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
-                            str(motor0['T']), ], capture_output=True, text=True)
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
         return True
     else:
         return False
@@ -90,7 +93,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
-                            str(motor0['T']), ], capture_output=True, text=True)
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
 
         for torque in np.arange(minTorque, maxTorque, torqueStep):
 
@@ -106,7 +110,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['K_W']),
                                          str(motor1['Pos']),
                                          str(motor1['W']),
-                                         str(motor1['T']), ], capture_output=True, text=True)
+                                         str(motor1['T']), 
+                                         str(motor1['PID'])], capture_output=True, text=True)
 
                 match = re.search(pattern, output.stdout)
 
