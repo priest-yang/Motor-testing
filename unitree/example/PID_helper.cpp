@@ -81,12 +81,16 @@ int main(int argc, char ** argv){
 
         usleep(1000000);
         serial.sendRecv(&cmd,&data);
-        myfile << cmd.T << ", " << data.W << ", \n\r";
-        cout  << cmd.T << ", " << data.W << ", \n";
+        myfile << cmd.T << ", " << data.W << "\n\r";
+        cout  << cmd.T << ", " << data.W << "\n";
         usleep(2000000);
         serial.sendRecv(&cmd,&data);
-        myfile << cmd.T << ", " << data.W << ", \n\r";
-        cout  << cmd.T << ", " << data.W << ", \n";
+        myfile << cmd.T << ", " << data.W << "\n\r";
+        cout  << cmd.T << ", " << data.W << "\n";
+        usleep(1000000);
+        serial.sendRecv(&cmd,&data);
+        myfile << cmd.T << ", " << data.W << "\n\r";
+        cout  << cmd.T << ", " << data.W << "\n";
 
         cmd.id = 0;
         cmd.T = 0;
