@@ -72,7 +72,7 @@ int flag = 0;
 //      cmd.Pos   = 0.0;
 //      cmd.W     = 0.0;
 //      cmd.T     = 0.0;
-      usleep(2000000);
+      usleep(600000);
       serial.sendRecv(&cmd,&data);
 
 
