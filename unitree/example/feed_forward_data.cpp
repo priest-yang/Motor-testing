@@ -40,7 +40,7 @@ int main(int argc, char ** argv){
 
         usleep(5000000);
         serial.sendRecv(&cmd,&data);
-        myfile << cmd.T << ", " << data.W << "\n";
+        myfile << cmd.T << ", " << data.W << "\n\r";
         cout  << cmd.T << ", " << data.W << "\n";
 
         

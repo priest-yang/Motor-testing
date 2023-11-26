@@ -4,6 +4,7 @@
 /*Global variable*/
 double K_I = 0.01;
 double K_D = 0.01;
+double Tor_ff = 0.092;
 
 
 bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
@@ -50,7 +51,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             error_accum += error;
 
             double Tor_fb =  K_D * error + K_I * error_accum;
-            double Tor_ff = 0; // not implented yet
+
             cmd.T = Tor_fb + Tor_ff;
         }
 
