@@ -33,7 +33,7 @@ int main(int argc, char ** argv){
     // header
     myfile << "T,W\n";
 
-    for(float i = 0.8; i < 1.1;i+= 0.01){
+    for(float i = 0.8; i < 1.2;i+= 0.01){
         cmd.T = i;
 
         serial.sendRecv(&cmd,&data);
