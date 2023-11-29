@@ -1,9 +1,10 @@
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
+#include <chrono>
 
 /*Global variable*/
-double K_I = 0.01;
-double K_D = 0.01;
+double K_I = 0.0011; // 0.01 / 1000;
+double K_D = 0.015; //0.01;
 double Tor_ff = 0.092;
 
 
@@ -13,26 +14,29 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
     // return: true if the motor has reached the target speed, false otherwise
 
     serial_port.sendRecv(&cmd,&data);
-     usleep(5000);
+    usleep(50000);
+
     if (cmd.W == 0){
         // tested motor, directly return True
         return true;
     }
 
     if (std::abs((data.W - cmd.W) / cmd.W) > 0.01 && std::abs(data.W - cmd.W) > 0.1) {
-        // PID controller
 
+        // PID controller
         double error_accum = 0;
         double error = 0;
 
-        for (int iter = 0; iter < 50; iter++){
+        for (int iter = 0; iter < 100; iter++){
+            auto start_time = std::chrono::high_resolution_clock::now();
+
             serial_port.sendRecv(&cmd,&data);
-            usleep(50000);
+            usleep(5000);
             // if received motor's data is broken, try 3 times
             if (!data.correct){
                 int temp = 0;
                 while ((!data.correct) && temp < 3){
-                    usleep(50000);
+                    usleep(5000);
                     serial_port.sendRecv(&cmd,&data);
                     if (data.correct){
                         break;
@@ -46,13 +50,18 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
                 return true;
             }
 
+            auto end_time = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+
             error = cmd.W - data.W;
-//            std::cout <<error_accum << std::endl;
-            error_accum += error;
+            error_accum += error * double(duration.count()) / 1000;
 
             double Tor_fb =  K_D * error + K_I * error_accum;
 
-            cmd.T = Tor_fb + Tor_ff;
+            cmd.T = float(Tor_fb + Tor_ff);
+            serial_port.sendRecv(&cmd,&data);
+            usleep(5000);
+            // std::cout << cmd.T << std::endl;
         }
 
         // PID controller failed
@@ -80,8 +89,10 @@ int main(int argc, char** argv) {
     cmd.K_W   = 0.0;
     cmd.Pos   = 0.0;
     cmd.W     = 0.0;
-    cmd.T     = 0.5;
+    cmd.T     = 0.6;
+    usleep(50000);
     serial.sendRecv(&cmd,&data);
+    usleep(50000);
 
 
     cmd.id    = atoi(argv[1]);
@@ -91,12 +102,14 @@ int main(int argc, char** argv) {
     cmd.Pos   = atof(argv[4]);
     cmd.W     = atof(argv[5]);
     cmd.T     = atof(argv[6]);
-
+    cmd.W     = -145;
     
     // wait motor to reach the target speed
     usleep(50000);
-//    bool control_flag = true;
-    bool control_flag = PID_control(cmd, data, serial);
+    bool control_flag = true;
+
+    control_flag = PID_control(cmd, data, serial);
+
     if (!control_flag){
         std::cout << "Motor has not reached the target speed" << std::endl;
     }
@@ -118,3 +131,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
