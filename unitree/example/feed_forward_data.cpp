@@ -46,7 +46,7 @@ int main(int argc, char ** argv){
     // header
     myfile << "T,W\n";
 
-    for(float i = 0.03; i < 1.2; i+= 0.005){
+    for(float i = 0.2; i > 0.05; i-= 0.001){
         cmd.T = i;
 
         serial.sendRecv(&cmd,&data);
