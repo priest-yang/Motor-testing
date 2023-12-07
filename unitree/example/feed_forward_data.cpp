@@ -19,6 +19,7 @@ int main(int argc, char ** argv){
     MotorCmd    cmd;
     MotorData   data;
     cmd.motorType = MotorType::GO_M8010_6;
+
     cmd.id    = 0;
     cmd.mode  = 1;
     cmd.K_P   = 0.0;
@@ -28,12 +29,25 @@ int main(int argc, char ** argv){
     cmd.W     =0.0;
     cmd.T     = 0.0;
     serial.sendRecv(&cmd,&data);
+    usleep(500000);
+
+
+    cmd.id    = 1;
+    cmd.mode  = 1;
+    cmd.K_P   = 0.0;
+    cmd.K_W   = 0.0;
+    cmd.Pos   = 0.0;
+//      cmd.W     =atof(argv[1]);
+    cmd.W     =0.0;
+    cmd.T     = 0.07;
+    serial.sendRecv(&cmd,&data);
+    usleep(5000000);
 
 
     // header
     myfile << "T,W\n";
 
-    for(float i = 0.8; i < 1.1;i+= 0.01){
+    for(float i = 0.9; i > 0.01; i-= 0.001){
         cmd.T = i;
 
         serial.sendRecv(&cmd,&data);

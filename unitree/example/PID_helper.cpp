@@ -73,7 +73,7 @@ int main(int argc, char ** argv){
     cmd.id = 1;
     serial.sendRecv(&cmd,&data);
     cmd.id = 0;
-    for(float i = 0.08; i < 0.12;i+= 0.001){
+    for(float i = 0.08; i < 0.15;i+= 0.001){
 
         cmd.T = i;
 

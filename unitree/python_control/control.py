@@ -9,6 +9,13 @@ import re
 
 GEAR_RATIO = 6.33
 
+MIN_TORQUE = 0.5
+MAX_TORQUE = 5.5
+TORQUE_STEP = 0.5
+MIN_SPEED = - 2 * GEAR_RATIO
+MAX_SPEED = - 5 * GEAR_RATIO
+SPEED_STEP = - 1 * GEAR_RATIO
+
 # motor0: driving motor, speed mode
 motor0 = {
     'id': 0,
@@ -17,6 +24,7 @@ motor0 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
+    'PID': 0,
 }
 
 # motor1: testing motor, torque mode
@@ -27,15 +35,8 @@ motor1 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
+    'PID': 0,
 }
-
-MIN_TORQUE = 0.5
-MAX_TORQUE = 1.5
-TORQUE_STEP = 0.05
-MIN_SPEED = 2 * GEAR_RATIO
-MAX_SPEED = 10 * GEAR_RATIO
-SPEED_STEP = 0.5 * GEAR_RATIO
-
 
 def stop_motor():
     # output = subprocess.run(["../build/stop"], capture_output=True, text=True)
@@ -61,7 +62,8 @@ def adjust_PD(current_speed):
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
-                            str(motor0['T']), ], capture_output=True, text=True)
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
         return True
     else:
         return False
@@ -76,7 +78,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
     import subprocess
 
     rm = pyvisa.ResourceManager()
-    # print()rm.list_resources())
+    print(rm.list_resources())
     siglent = rm.open_resource(rm.list_resources()[0])
 
     result = pd.DataFrame(columns=['input_speed', 'input_torque', 'voltage', 'output_speed', 'output_torque', 'temp'])
@@ -91,7 +93,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
-                            str(motor0['T']), ], capture_output=True, text=True)
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
 
         for torque in np.arange(minTorque, maxTorque, torqueStep):
 
@@ -107,13 +110,28 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['K_W']),
                                          str(motor1['Pos']),
                                          str(motor1['W']),
-                                         str(motor1['T']), ], capture_output=True, text=True)
+                                         str(motor1['T']), 
+                                         str(motor1['PID'])], capture_output=True, text=True)
+                
+                time.sleep(0.3)
+                
+                # re-run motor 0 PID
+                driving_output = subprocess.run(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']), 
+                            str(motor0['PID'])], capture_output=True, text=True)
 
                 match = re.search(pattern, output.stdout)
+                match_driving_output = re.search(pattern, driving_output.stdout)
 
-                if match:
+                if match and match_driving_output:
                     temp = int(match.group(1))
-                    speed = float(match.group(2))
+                    # speed = float(match.group(2))
+                    speed = float(match_driving_output.group(2))
                     torque = float(match.group(3))
 
                     result_dict = {'temp': temp, 'output_speed': speed, 'output_torque': torque}
@@ -139,7 +157,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     time.sleep(3)
 
         print('Writting file to csv...')
-        result.to_csv('../data/go1.csv')
+        result.to_csv('../data/go1_with_all.csv')
 
     siglent.close()
 

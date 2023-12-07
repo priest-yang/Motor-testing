@@ -1,6 +1,6 @@
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
-//#include "preprogrammed.h"
+#include "preprogrammed.h"
 
 
 
@@ -52,7 +52,18 @@ int flag = 0;
 //      cmd.W     =atof(argv[1]);
     cmd.W     =atof(argv[5]);
       cmd.T     = atof(argv[6]);
-    serial.sendRecv(&cmd,&data);
+
+      int use_PID = atoi(argv[7]);
+      if(use_PID == 1){
+          //use PID to control
+          bool is_done = PID_control(cmd, data, serial);
+//          if(is_done){
+//              std::cout << "is done\n";
+//          }
+      } else{
+          serial.sendRecv(&cmd,&data);
+      }
+
 //torque mode
 //      cmd.id    = 1;
 //      cmd.mode  = 1;
@@ -61,7 +72,7 @@ int flag = 0;
 //      cmd.Pos   = 0.0;
 //      cmd.W     = 0.0;
 //      cmd.T     = 0.0;
-      usleep(50000);
+      usleep(300000);
       serial.sendRecv(&cmd,&data);
 
 
