@@ -1,6 +1,7 @@
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
 #include <chrono>
+#include <fstream>
 
 /*Global variable*/
 double K_I = 0.0011; // 0.01 / 1000;
@@ -9,10 +10,16 @@ double K_P = 0.015; //0.01;
 double Tor_ff = 0.092;
 
 
-bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
+bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port, std::string path_to_logging= "../data/driving_motor/logging.csv"){
     // cmd: command to be sent to the motor
     // data: data received from the motor
     // return: true if the motor has reached the target speed, false otherwise
+
+    // open the logging file
+    std::ofstream csvFile(path_to_logging, std::ios::app);
+    if (!csvFile.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+    }
 
     serial_port.sendRecv(&cmd,&data);
     usleep(2000);
@@ -37,7 +44,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             if (!data.correct){
                 int temp = 0;
                 while ((!data.correct) && temp < 3){
-                    usleep(2000);
+                    usleep(1000);
                     serial_port.sendRecv(&cmd,&data);
                     if (data.correct){
                         break;
@@ -66,13 +73,17 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             serial_port.sendRecv(&cmd,&data);
             usleep(2000);
             // std::cout << cmd.T << std::endl;
+            csvFile << cmd.W << " , " << data.W << std::endl;
+
         }
         // PID controller failed
-        return false;
-
+        csvFile.close();
+        return true;
     }else{
+        csvFile.close();
         return true;
     }
+
 }
 
 int main(int argc, char** argv) {
