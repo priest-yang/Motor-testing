@@ -85,7 +85,7 @@ int flag = 0;
 //      cmd.T     = 0.02;
 //      serial.sendRecv(&cmd,&data);
 
-      if(data.correct == true)
+      while(data.correct == true)
       {
 //          std::cout <<  std::endl;
 //          std::cout <<  "motor.Pos: "    << data.Pos    << " rad" << std::endl;

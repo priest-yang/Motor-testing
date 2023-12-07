@@ -5,7 +5,7 @@
 
 /*Global variable*/
 double K_I = 0.0011; // 0.01 / 1000;
-double max_I = 1;
+double max_I = 1000;
 double K_P = 0.015; //0.01;
 double Tor_ff = 0.092;
 
@@ -65,6 +65,8 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port, std::s
             error_accum += error * double(duration.count()) / 1000;
             if (error_accum > max_I){
                 error_accum = max_I;
+            } else if (-error_accum > max_I){
+                error_accum = -max_I;
             }
 
             double Tor_fb =  K_P * error + K_I * error_accum;
@@ -73,7 +75,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port, std::s
             serial_port.sendRecv(&cmd,&data);
             usleep(2000);
             // std::cout << cmd.T << std::endl;
-            csvFile << cmd.W << " , " << data.W << std::endl;
+            csvFile << cmd.W << " , " << data.W << " , " << error_accum << " , " << error << std::endl;
 
         }
         // PID controller failed
