@@ -4,7 +4,8 @@
 
 /*Global variable*/
 double K_I = 0.0011; // 0.01 / 1000;
-double K_D = 0.015; //0.01;
+double max_I = 1;
+double K_P = 0.015; //0.01;
 double Tor_ff = 0.092;
 
 
@@ -14,7 +15,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
     // return: true if the motor has reached the target speed, false otherwise
 
     serial_port.sendRecv(&cmd,&data);
-    usleep(50000);
+    usleep(2000);
 
     if (cmd.W == 0){
         // tested motor, directly return True
@@ -27,16 +28,16 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error_accum = 0;
         double error = 0;
 
-        for (int iter = 0; iter < 100; iter++){
+        for (int iter = 0; iter < 5000000; iter++){
             auto start_time = std::chrono::high_resolution_clock::now();
 
             serial_port.sendRecv(&cmd,&data);
-            usleep(5000);
+            usleep(2000);
             // if received motor's data is broken, try 3 times
             if (!data.correct){
                 int temp = 0;
                 while ((!data.correct) && temp < 3){
-                    usleep(5000);
+                    usleep(2000);
                     serial_port.sendRecv(&cmd,&data);
                     if (data.correct){
                         break;
@@ -46,24 +47,26 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
                 return false;
             }
 
-            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
-                return true;
-            }
+//            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
+//                return true;
+//            }
 
             auto end_time = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
             error = cmd.W - data.W;
             error_accum += error * double(duration.count()) / 1000;
+            if (error_accum > max_I){
+                error_accum = max_I;
+            }
 
-            double Tor_fb =  K_D * error + K_I * error_accum;
+            double Tor_fb =  K_P * error + K_I * error_accum;
 
             cmd.T = float(Tor_fb + Tor_ff);
             serial_port.sendRecv(&cmd,&data);
-            usleep(5000);
+            usleep(2000);
             // std::cout << cmd.T << std::endl;
         }
-
         // PID controller failed
         return false;
 
@@ -89,12 +92,12 @@ int main(int argc, char** argv) {
     cmd.K_W   = 0.0;
     cmd.Pos   = 0.0;
     cmd.W     = 0.0;
-    cmd.T     = 1;
+    cmd.T     = 0;
     serial.sendRecv(&cmd,&data);
 
 
     cmd.id    = atoi(argv[1]);
-    cmd.mode  = 2;
+    cmd.mode  = 1;
     cmd.K_P   = atof(argv[2]);
     cmd.K_W   = atof(argv[3]);
     cmd.Pos   = atof(argv[4]);
