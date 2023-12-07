@@ -9,9 +9,9 @@ import re
 
 GEAR_RATIO = 6.33
 
-MIN_TORQUE = 0.1
-MAX_TORQUE = 0.5
-TORQUE_STEP = 0.05
+MIN_TORQUE = 0.5
+MAX_TORQUE = 5.5
+TORQUE_STEP = 0.5
 MIN_SPEED = - 2 * GEAR_RATIO
 MAX_SPEED = - 5 * GEAR_RATIO
 SPEED_STEP = - 1 * GEAR_RATIO
@@ -123,9 +123,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                             str(motor0['W']),
                             str(motor0['T']), 
                             str(motor0['PID'])], capture_output=True, text=True)
-                
 
-                
                 match = re.search(pattern, output.stdout)
                 match_driving_output = re.search(pattern, driving_output.stdout)
 

@@ -89,12 +89,12 @@ int main(int argc, char** argv) {
     cmd.K_W   = 0.0;
     cmd.Pos   = 0.0;
     cmd.W     = 0.0;
-    cmd.T     = 0.5;
+    cmd.T     = 1;
     serial.sendRecv(&cmd,&data);
 
 
     cmd.id    = atoi(argv[1]);
-    cmd.mode  = 1;
+    cmd.mode  = 2;
     cmd.K_P   = atof(argv[2]);
     cmd.K_W   = atof(argv[3]);
     cmd.Pos   = atof(argv[4]);
