@@ -7,7 +7,7 @@
 int main(int argc, char** argv) {
 //argv 1= id, argv 2 = K_P, argv3 = k_w argv 4 = pos, argv 5 = w, argv 6= T
   SerialPort  serial("/dev/ttyUSB0");
-  SerialPort  serial2("/dev/ttyUSB1");
+//  SerialPort  serial2("/dev/ttyUSB1");
   MotorCmd    cmd;
   MotorData   data;
 
@@ -27,14 +27,14 @@ int main(int argc, char** argv) {
       if(use_PID == 1){
           //use PID to control
           if(cmd.id == 1){
-              PID_impl(cmd,data,serial2);
+//              PID_impl(cmd,data,serial2);
           } else{
               PID_impl(cmd,data,serial);
           }
 
       } else{
           if(cmd.id == 1){
-              serial2.sendRecv(&cmd,&data);
+//              serial2.sendRecv(&cmd,&data);
           } else{
               serial.sendRecv(&cmd,&data);
           }
