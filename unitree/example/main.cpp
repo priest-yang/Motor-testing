@@ -3,45 +3,15 @@
 #include "preprogrammed.h"
 
 
+
 int main(int argc, char** argv) {
 //argv 1= id, argv 2 = K_P, argv3 = k_w argv 4 = pos, argv 5 = w, argv 6= T
   SerialPort  serial("/dev/ttyUSB0");
   MotorCmd    cmd;
   MotorData   data;
-double pos = 0;
-int flag = 0;
-//  while(true) {
+
     cmd.motorType = MotorType::GO_M8010_6;
-//    cmd.id    = 0;
-//    cmd.mode  = 1;
-//    cmd.K_P   = 0.0;
-//    cmd.K_W   = 0.05;
-//    cmd.Pos   = 0.0;
-//    cmd.W     = 6.28*6.33;
-//    cmd.T     = 0.0;
 
-////position mode
-//      cmd.id    = 0;
-//      cmd.mode  = 1;
-//      cmd.K_P   = 0.01;
-//      cmd.K_W   = 0.02;
-//      cmd.Pos   = 3.14*6.33;
-//      cmd.W     = 0.0;
-//      cmd.T     = 0.0;
-
-//damping mode
-//      cmd.id    = 0;
-//      cmd.mode  = 1;
-//      cmd.K_P   = 0.0;
-//      cmd.K_W   = 0.0;
-//      cmd.Pos   = 0.0;
-//      cmd.W     = 0.0;
-////      cmd.T     = -0.035;
-//      if(data.W >0){
-//          cmd.T  = 0.035;
-//      }else{
-//          cmd.T = -0.035;
-//      }
 //speed mode
       cmd.id    = atoi(argv[1]);
       cmd.mode  = 1;
@@ -55,7 +25,8 @@ int flag = 0;
       int use_PID = atoi(argv[7]);
       if(use_PID == 1){
           //use PID to control
-          bool is_done = PID_control(cmd, data, serial);
+//          bool is_done = PID_control(cmd, data, serial);
+          PID_impl(cmd,data,serial);
 //          if(is_done){
 //              std::cout << "is done\n";
 //          }
@@ -63,14 +34,6 @@ int flag = 0;
           serial.sendRecv(&cmd,&data);
       }
 
-//torque mode
-//      cmd.id    = 1;
-//      cmd.mode  = 1;
-//      cmd.K_P   = 0.0;
-//      cmd.K_W   = 0.0;
-//      cmd.Pos   = 0.0;
-//      cmd.W     = 0.0;
-//      cmd.T     = 0.0;
       usleep(300000);
       serial.sendRecv(&cmd,&data);
 
