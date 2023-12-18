@@ -7,11 +7,14 @@
 
 #include "serialPort/SerialPort.h"
 #include <unistd.h>
+#include <chrono>
+#include <fstream>
 
-static double K_I = 0.01;
-static double K_D = 0.01;
+/*Global variable*/
+static double K_I = 0.0011; // 0.01 / 1000;
+static double max_I = 5000;
+static double K_P = 0.015; //0.01;
 static double Tor_ff = 0.092;
-//static double Tor_ff = 0.0;
 
 bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port);
 

@@ -10,7 +10,7 @@ import re
 GEAR_RATIO = 6.33
 
 MIN_TORQUE = 0.5
-MAX_TORQUE = 5.5
+MAX_TORQUE = 3.0
 TORQUE_STEP = 0.5
 MIN_SPEED = - 2 * GEAR_RATIO
 MAX_SPEED = - 5 * GEAR_RATIO
@@ -87,6 +87,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
     for speed in np.arange(minSpeed, maxSpeed, speedStep):
         cur_speed = speed
         motor0['W'] = cur_speed
+
+        print("run pid")
         _ = subprocess.run(["../build/motorctrl",
                             str(motor0['id']),
                             str(motor0['K_P']),

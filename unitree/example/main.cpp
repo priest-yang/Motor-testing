@@ -3,7 +3,6 @@
 #include "preprogrammed.h"
 
 
-
 int main(int argc, char** argv) {
 //argv 1= id, argv 2 = K_P, argv3 = k_w argv 4 = pos, argv 5 = w, argv 6= T
   SerialPort  serial("/dev/ttyUSB0");
@@ -85,8 +84,8 @@ int flag = 0;
 //      cmd.T     = 0.02;
 //      serial.sendRecv(&cmd,&data);
 
-      while(data.correct == true)
-      {
+//      while(data.correct == true)
+//      {
 //          std::cout <<  std::endl;
 //          std::cout <<  "motor.Pos: "    << data.Pos    << " rad" << std::endl;
           std::cout <<  "motor.Temp: "   << data.Temp   << " ℃"  << std::endl;
@@ -96,7 +95,7 @@ int flag = 0;
 
 //          std::cout <<  "motor.MError: " << data.MError <<  std::endl;
 //          std::cout <<  std::endl;
-      }
+//      }
 //      usleep(3000000);
     return 0;
   }

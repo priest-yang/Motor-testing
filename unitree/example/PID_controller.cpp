@@ -5,7 +5,7 @@
 
 /*Global variable*/
 double K_I = 0.0011; // 0.01 / 1000;
-double max_I = 1000;
+double max_I = 5000;
 double K_P = 0.015; //0.01;
 double Tor_ff = 0.092;
 
@@ -35,7 +35,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port, std::s
         double error_accum = 0;
         double error = 0;
 
-        for (int iter = 0; iter < 5000000; iter++){
+        for (int iter = 0; iter < 50000; iter++){
             auto start_time = std::chrono::high_resolution_clock::now();
 
             serial_port.sendRecv(&cmd,&data);
@@ -54,9 +54,9 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port, std::s
                 return false;
             }
 
-//            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
-//                return true;
-//            }
+            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
+                return true;
+            }
 
             auto end_time = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
