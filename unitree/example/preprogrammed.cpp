@@ -31,10 +31,11 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error = 0;
 
         for (int iter = 0; iter < 8000000; iter++){
-            auto start_time = std::chrono::high_resolution_clock::now();
+            auto start_time = std::chrono::steady_clock::now();
 
             serial_port.sendRecv(&cmd,&data);
-            usleep(2000);
+//            usleep(2000);
+            std::this_thread::sleep_for(std::chrono::microseconds(2000));
             // if received motor's data is broken, try 3 times
             if (!data.correct){
                 int temp = 0;
@@ -53,9 +54,10 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
 //                return true;
 //            }
 
-            auto end_time = std::chrono::high_resolution_clock::now();
+            auto end_time = std::chrono::steady_clock::now();
+//            cout << "start time: " << start_time << " end time: " << end_time << endl;
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-
+            cout << duration.count() << endl;
             error = cmd.W - data.W;
             error_accum += error * double(duration.count()) / 1000;
             if (error_accum > max_I){
@@ -96,6 +98,9 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
 
         while(true){
             auto start_time = std::chrono::high_resolution_clock::now();
+            serial_port.sendRecv(&cmd,&data);
+//            usleep(2000);
+            std::this_thread::sleep_for(std::chrono::microseconds(2000));
             if (!data.correct){
                 int temp = 0;
                 //data incorrect, resend for four times
@@ -113,14 +118,14 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
             error = cmd.W - data.W;
             error_accum += error * double(duration.count()) / 1000;
-            cout << double(duration.count()) << endl;
+//            cout << double(duration.count()) << endl;
             if (error_accum > max_I){
                 error_accum = max_I;
             } else if (-error_accum > max_I){
                 error_accum = -max_I;
             }
-            cout << "Error: " << error << endl;
-            cout << "accum_error: " << error_accum << endl;
+//            cout << "Error: " << error << endl;
+//            cout << "accum_error: " << error_accum << endl;
 
             double Tor_fb =  K_P * error + K_I * error_accum;
 
