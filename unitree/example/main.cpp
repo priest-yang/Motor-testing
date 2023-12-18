@@ -7,6 +7,7 @@
 int main(int argc, char** argv) {
 //argv 1= id, argv 2 = K_P, argv3 = k_w argv 4 = pos, argv 5 = w, argv 6= T
   SerialPort  serial("/dev/ttyUSB0");
+  SerialPort  serial2("/dev/ttyUSB1");
   MotorCmd    cmd;
   MotorData   data;
 
@@ -25,13 +26,19 @@ int main(int argc, char** argv) {
       int use_PID = atoi(argv[7]);
       if(use_PID == 1){
           //use PID to control
-//          bool is_done = PID_control(cmd, data, serial);
-          PID_impl(cmd,data,serial);
-//          if(is_done){
-//              std::cout << "is done\n";
-//          }
+          if(cmd.id == 1){
+              PID_impl(cmd,data,serial2);
+          } else{
+              PID_impl(cmd,data,serial);
+          }
+
       } else{
-          serial.sendRecv(&cmd,&data);
+          if(cmd.id == 1){
+              serial2.sendRecv(&cmd,&data);
+          } else{
+              serial.sendRecv(&cmd,&data);
+          }
+
       }
 
       usleep(300000);

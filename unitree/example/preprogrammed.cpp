@@ -133,7 +133,7 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             serial_port.sendRecv(&cmd,&data);
             usleep(2000);
 //            std::cout <<  "motor.Temp: "   << data.Temp   << " ℃"  << std::endl;
-            std::cout <<  "motor.W: "      << data.W      << " rad/s"<<std::endl;
+//            std::cout <<  "motor.W: "      << data.W      << " rad/s"<<std::endl;
 //            std::cout <<  "motor.T: "      << data.T      << " N.m" << std::endl;
 
 

@@ -24,7 +24,7 @@ motor0 = {
     'Pos': 0.0,
     'W': 0.0 * GEAR_RATIO,
     'T': 0.0,
-    'PID': 0,
+    'PID': 1,
 }
 
 # motor1: testing motor, torque mode
@@ -56,14 +56,14 @@ def adjust_PD(current_speed):
         motor0['K_W'] = motor0['K_W'] + 0.01
         print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
 
-        _ = subprocess.run(["../build/motorctrl",
-                            str(motor0['id']),
-                            str(motor0['K_P']),
-                            str(motor0['K_W']),
-                            str(motor0['Pos']),
-                            str(motor0['W']),
-                            str(motor0['T']), 
-                            str(motor0['PID'])], capture_output=True, text=True)
+        # _ = subprocess.run(["../build/motorctrl",
+        #                     str(motor0['id']),
+        #                     str(motor0['K_P']),
+        #                     str(motor0['K_W']),
+        #                     str(motor0['Pos']),
+        #                     str(motor0['W']),
+        #                     str(motor0['T']),
+        #                     str(motor0['PID'])], capture_output=True, text=True)
         return True
     else:
         return False
@@ -83,20 +83,30 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
 
     result = pd.DataFrame(columns=['input_speed', 'input_torque', 'voltage', 'output_speed', 'output_torque', 'temp'])
     pattern = r"[\s\S]+ ([-|\d]+)[\s\S]+ ([-|\d.]+)[\s\S]+ ([-|\d.]+)"
-
+    speed_adj_thread = subprocess.Popen(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']),
+                            "0"])
     for speed in np.arange(minSpeed, maxSpeed, speedStep):
         cur_speed = speed
         motor0['W'] = cur_speed
 
         print("run pid")
-        _ = subprocess.run(["../build/motorctrl",
+        # speed_adj_thread.kill()
+        # speed_adj_thread.wait()
+
+        _ = subprocess.Popen(["../build/motorctrl",
                             str(motor0['id']),
                             str(motor0['K_P']),
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
                             str(motor0['T']), 
-                            str(motor0['PID'])], capture_output=True, text=True)
+                            str(motor0['PID'])])
 
         for torque in np.arange(minTorque, maxTorque, torqueStep):
 
@@ -105,6 +115,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
             motor1['T'] = torque
 
             for _ in range(runtime):
+                # speed_adj_thread.kill()
+                # speed_adj_thread.wait()
 
                 output = subprocess.run(["../build/motorctrl",
                                          str(motor1['id']),
@@ -114,33 +126,61 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['W']),
                                          str(motor1['T']), 
                                          str(motor1['PID'])], capture_output=True, text=True)
-                
+
+                speed_adj_thread = subprocess.Popen(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']),
+                            str(motor0['PID'])])
                 time.sleep(0.3)
-                
+                # driving_output = subprocess.run(["../build/motorctrl",
+                #                          str(motor1['id']),
+                #                          str(motor1['K_P']),
+                #                          str(motor1['K_W']),
+                #                          str(motor1['Pos']),
+                #                          str(motor1['W']),
+                #                          str(motor1['T']),
+                #                          str(motor1['PID'])], capture_output=True, text=True)
                 # re-run motor 0 PID
+
+                speed_adj_thread.kill()
+                # speed_adj_thread.wait()
                 driving_output = subprocess.run(["../build/motorctrl",
                             str(motor0['id']),
                             str(motor0['K_P']),
                             str(motor0['K_W']),
                             str(motor0['Pos']),
                             str(motor0['W']),
-                            str(motor0['T']), 
-                            str(motor0['PID'])], capture_output=True, text=True)
-
+                            str(motor0['T']),
+                            "0"], capture_output=True, text=True)
+                speed_adj_thread = subprocess.Popen(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(motor0['W']),
+                            str(motor0['T']),
+                            str(motor0['PID'])])
                 match = re.search(pattern, output.stdout)
                 match_driving_output = re.search(pattern, driving_output.stdout)
 
                 if match and match_driving_output:
+                    print("getting a match!")
                     temp = int(match.group(1))
                     # speed = float(match.group(2))
                     speed = float(match_driving_output.group(2))
                     torque = float(match.group(3))
-
+                    print(temp)
+                    print(speed)
+                    print(torque)
                     result_dict = {'temp': temp, 'output_speed': speed, 'output_torque': torque}
                     result_dict.update({'input_speed': motor0['W'], 'input_torque': motor1['T']})
                     cur_df = pd.Series(data=result_dict).to_frame().T
 
-                    if temp > 45:
+                    if temp > 80:
                         print(f"Overheat!!, temp: {temp}")
                         stop_motor()
                         break
