@@ -49,9 +49,9 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
                 return false;
             }
 
-            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
-                return true;
-            }
+//            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
+//                return true;
+//            }
 
             auto end_time = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);

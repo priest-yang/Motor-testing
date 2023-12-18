@@ -18,6 +18,9 @@ static double Tor_ff = 0.092;
 
 bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port);
 
+void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port);
+
+
 
 
 #endif //UNITREEMOTORSDK_M80106_PREPROGRAMMED_H
