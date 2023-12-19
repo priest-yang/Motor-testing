@@ -24,6 +24,16 @@ int main(int argc, char** argv) {
       cmd.T     = atof(argv[6]);
 
       int use_PID = atoi(argv[7]);
+
+//    cmd.id    = 0;
+//    cmd.mode  = 1;
+//    cmd.K_P   = 0;
+//    cmd.K_W   = 0;
+//    cmd.Pos   = 0;
+//    cmd.W     =;
+//    cmd.T     = ;
+
+//    int use_PID = 0;
       if(use_PID == 1){
           //use PID to control
               PID_impl(cmd,data,serial);

@@ -9,12 +9,12 @@ import re
 
 GEAR_RATIO = 6.33
 
-MIN_TORQUE = 0.5
-MAX_TORQUE = 3.0
-TORQUE_STEP = 0.5
-MIN_SPEED = - 2 * GEAR_RATIO
+MIN_TORQUE = 0.1
+MAX_TORQUE = 1
+TORQUE_STEP = 0.05
+MIN_SPEED = - 1 * GEAR_RATIO
 MAX_SPEED = - 5 * GEAR_RATIO
-SPEED_STEP = - 1 * GEAR_RATIO
+SPEED_STEP = - 0.5 * GEAR_RATIO
 
 # motor0: driving motor, speed mode
 motor0 = {
@@ -175,6 +175,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                 #             str(motor0['W']),
                 #             str(motor0['T']),
                 #             str(motor0['PID'])])
+                # print(output.stdout)
                 match = re.search(pattern, output.stdout)
                 match_driving_output = re.search(pattern, driving_output.stdout)
 
@@ -204,7 +205,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                 adjust_flag = adjust_PD(speed)
 
                 if not adjust_flag:  # if K_P and K_W are not adjusted, then read voltage and record data
-                    cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
+                    cur_df['voltage'] = siglent.query('MEAS:VOLT:AC?')
                     result = pd.concat([result, cur_df], ignore_index=True)
                 else:
                     time.sleep(3)
