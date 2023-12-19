@@ -1,5 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def read_csv(file_path):
     with open(file_path, 'r') as csvfile:
@@ -22,13 +24,14 @@ file_path = 'go1_with_all.csv'  # Replace 'your_file.csv' with the actual file p
 data = read_csv(file_path)
 
 # Extracting relevant columns
-input_torque = data['input_torque']
-voltage = data['voltage']
+torque_cmd = data['input_torque']
+voltage = np.asarray(data['voltage'])
+torque_measured = -voltage * 1000 * 5.0122
 
 # Plotting the scatter plot
-plt.scatter(input_torque, voltage, marker='o')
+plt.scatter(torque_cmd, torque_measured, marker='o')
 plt.title('Scatter Plot: Input Torque vs. Voltage')
-plt.xlabel('Input Torque')
-plt.ylabel('Voltage')
+plt.xlabel('Torque Command [Nm]')
+plt.ylabel('Torque Sensor [Nm]')
 plt.grid(True)
 plt.show()
