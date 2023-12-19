@@ -26,19 +26,9 @@ int main(int argc, char** argv) {
       int use_PID = atoi(argv[7]);
       if(use_PID == 1){
           //use PID to control
-          if(cmd.id == 1){
-//              PID_impl(cmd,data,serial2);
-          } else{
               PID_impl(cmd,data,serial);
-          }
-
       } else{
-          if(cmd.id == 1){
-//              serial2.sendRecv(&cmd,&data);
-          } else{
               serial.sendRecv(&cmd,&data);
-          }
-
       }
 
       usleep(300000);

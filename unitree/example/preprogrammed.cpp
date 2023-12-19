@@ -96,7 +96,9 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error_accum = 0;
         double error = 0;
 
-        while(true){
+//        while(true){
+        for(int iter = 0; iter < 5000000; iter++){
+//            cout <<iter << endl;
             auto start_time = std::chrono::high_resolution_clock::now();
             serial_port.sendRecv(&cmd,&data);
 //            usleep(2000);
@@ -113,6 +115,9 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
                     temp += 1;
                 }
                 return ;
+            }
+            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
+                return;
             }
             auto end_time = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
