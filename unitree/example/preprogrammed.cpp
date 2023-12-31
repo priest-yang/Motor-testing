@@ -97,7 +97,7 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error = 0;
 
 //        while(true){
-        for(int iter = 0; iter < 5000000; iter++){
+        for(int iter = 0; iter < 500000000; iter++){
 //            cout <<iter << endl;
             auto start_time = std::chrono::high_resolution_clock::now();
             serial_port.sendRecv(&cmd,&data);

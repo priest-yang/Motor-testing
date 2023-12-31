@@ -18,7 +18,7 @@ def read_csv(file_path):
     # File path to your CSV file
 
 
-file_path = 'sweep2.csv'  # Replace 'your_file.csv' with the actual file path
+file_path = 'sweep1_DC.csv'  # Replace 'your_file.csv' with the actual file path
 
 # Read data from CSV
 data = read_csv(file_path)

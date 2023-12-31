@@ -51,7 +51,7 @@ def adjust_PD(current_speed):
     Output: True if K_P and K_W are adjusted, False otherwise
     '''
     global motor0
-    if abs((current_speed - motor0['W']) / motor0['W']) > 0.2 and current_speed - motor0['W'] > 3:
+    if abs((abs(current_speed) - abs(motor0['W'])) / abs(motor0['W'])) > 0.2 and abs(current_speed) - abs(motor0['W']) > 3:
         cur_kw = motor0['K_W']
         motor0['K_W'] = motor0['K_W'] + 0.01
         print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
@@ -138,27 +138,9 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['T']), 
                                          str(motor1['PID'])], capture_output=True, text=True)
 
-                # speed_adj_thread = subprocess.Popen(["../build/motorctrl",
-                #             str(motor0['id']),
-                #             str(motor0['K_P']),
-                #             str(motor0['K_W']),
-                #             str(motor0['Pos']),
-                #             str(motor0['W']),
-                #             str(motor0['T']),
-                #             str(motor0['PID'])])
                 time.sleep(0.3)
-                # driving_output = subprocess.run(["../build/motorctrl",
-                #                          str(motor1['id']),
-                #                          str(motor1['K_P']),
-                #                          str(motor1['K_W']),
-                #                          str(motor1['Pos']),
-                #                          str(motor1['W']),
-                #                          str(motor1['T']),
-                #                          str(motor1['PID'])], capture_output=True, text=True)
-                # re-run motor 0 PID
 
-                # speed_adj_thread.kill()
-                # speed_adj_thread.wait()
+
                 driving_output = subprocess.run(["../build/motorctrl",
                             str(motor0['id']),
                             str(motor0['K_P']),
@@ -167,15 +149,16 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                             str(motor0['W']),
                             str(motor0['T']),
                             str(motor0['PID'])], capture_output=True, text=True)
-                # speed_adj_thread = subprocess.Popen(["../build/motorctrl",
-                #             str(motor0['id']),
-                #             str(motor0['K_P']),
-                #             str(motor0['K_W']),
-                #             str(motor0['Pos']),
-                #             str(motor0['W']),
-                #             str(motor0['T']),
-                #             str(motor0['PID'])])
-                # print(output.stdout)
+
+                output = subprocess.run(["../build/motorctrl",
+                                         str(motor1['id']),
+                                         str(motor1['K_P']),
+                                         str(motor1['K_W']),
+                                         str(motor1['Pos']),
+                                         str(motor1['W']),
+                                         str(motor1['T']),
+                                         str(motor1['PID'])], capture_output=True, text=True)
+
                 match = re.search(pattern, output.stdout)
                 match_driving_output = re.search(pattern, driving_output.stdout)
 
@@ -183,7 +166,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     # print("getting a match!")
                     temp = int(match.group(1))
                     # speed = float(match.group(2))
-                    speed = float(match_driving_output.group(2))
+                    speed = float(match.group(2))
                     torque = float(match.group(3))
                     print(temp)
                     print(speed)
@@ -205,14 +188,13 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                 adjust_flag = adjust_PD(speed)
 
                 if not adjust_flag:  # if K_P and K_W are not adjusted, then read voltage and record data
-                    cur_df['voltage'] = siglent.query('MEAS:VOLT:AC?')
+                    cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
                     result = pd.concat([result, cur_df], ignore_index=True)
                 else:
                     time.sleep(3)
 
         print('Writing file to csv...')
-        result.to_csv('../data/go1_with_all.csv')
-
+        result.to_csv('../data/sweep2_DC.csv')
 
     siglent.close()
 
@@ -221,25 +203,3 @@ if __name__ == '__main__':
     # stop_motor()
     motor_test_runner()
 
-# siglent = rm.open_resource('USB0::62700::4609::SDM35HBX7R0574::0::INSTR')
-# print(siglent.query('*IDN?'))
-
-# output = subprocess.run(["../build/motorctrl", "25"], capture_output=True, text=True)
-# print(output.stdout)
-# print(siglent.query('MEAS:VOLT:DC?'))
-# print(siglent.query('MEAS:VOLT:DC?'))
-
-# output = subprocess.run(["../build/motorctrl", "45"], capture_output=True, text=True)
-# print(output.stdout)
-# print(siglent.query('MEAS:VOLT:DC?'))
-# print(siglent.query('MEAS:VOLT:DC?'))
-
-# output = subprocess.run(["../build/motorctrl", "25"], capture_output=True, text=True)
-# print(output.stdout)
-# print(siglent.query('MEAS:VOLT:DC?'))
-# print(siglent.query('MEAS:VOLT:DC?'))
-
-# output = subprocess.run(["../build/stop"], capture_output=True, text=True)
-# print(output.stdout)
-
-# siglent.close()

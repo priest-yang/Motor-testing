@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
               serial.sendRecv(&cmd,&data);
       }
 
-      usleep(300000);
+      usleep(3000);
       serial.sendRecv(&cmd,&data);
 
 
