@@ -9,11 +9,11 @@ import re
 
 GEAR_RATIO = 6.33
 
-MIN_TORQUE = 0.1
-MAX_TORQUE = 1
+MIN_TORQUE = 1
+MAX_TORQUE = 2
 TORQUE_STEP = 0.05
 MIN_SPEED = - 1 * GEAR_RATIO
-MAX_SPEED = - 5 * GEAR_RATIO
+MAX_SPEED = - 10 * GEAR_RATIO
 SPEED_STEP = - 0.5 * GEAR_RATIO
 
 # motor0: driving motor, speed mode
