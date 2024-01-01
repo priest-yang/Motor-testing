@@ -13,8 +13,8 @@ MIN_TORQUE = 1
 MAX_TORQUE = 2
 TORQUE_STEP = 0.05
 MIN_SPEED = - 1 * GEAR_RATIO
-MAX_SPEED = - 5 * GEAR_RATIO
-SPEED_STEP = - 0.5 * GEAR_RATIO
+MAX_SPEED = - 39 * GEAR_RATIO
+SPEED_STEP = - 3 * GEAR_RATIO
 
 # motor0: driving motor, speed mode
 motor0 = {
