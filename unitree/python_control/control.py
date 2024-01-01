@@ -13,7 +13,7 @@ MIN_TORQUE = 1
 MAX_TORQUE = 2
 TORQUE_STEP = 0.05
 MIN_SPEED = - 1 * GEAR_RATIO
-MAX_SPEED = - 10 * GEAR_RATIO
+MAX_SPEED = - 5 * GEAR_RATIO
 SPEED_STEP = - 0.5 * GEAR_RATIO
 
 # motor0: driving motor, speed mode
@@ -88,30 +88,24 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
 
     result = pd.DataFrame(columns=['input_speed', 'input_torque', 'voltage', 'output_speed', 'output_torque', 'temp'])
     pattern = r"[\s\S]+ ([-|\d]+)[\s\S]+ ([-|\d.]+)[\s\S]+ ([-|\d.]+)"
-    # speed_adj_thread = subprocess.Popen(["../build/motorctrl",
-    #                         str(motor0['id']),
-    #                         str(motor0['K_P']),
-    #                         str(motor0['K_W']),
-    #                         str(motor0['Pos']),
-    #                         str(motor0['W']),
-    #                         str(motor0['T']),
-    #                         "0"])
-    for speed in np.arange(minSpeed, maxSpeed, speedStep):
-        cur_speed = speed
-        motor0['W'] = cur_speed
-
-        print("run pid")
-        # speed_adj_thread.kill()
-        # speed_adj_thread.wait()
-        # _ = subprocess.Popen(["../build/motorctrl",
-        #                     str(motor0['id']),
-        #                     str(motor0['K_P']),
-        #                     str(motor0['K_W']),
-        #                     str(motor0['Pos']),
-        #                     str(motor0['W']),
-        #                     str(motor0['T']),
-        #                     str(motor0['PID'])])
+    for torque in np.arange(minTorque, maxTorque, torqueStep):
+        motor1['T'] = torque
         _ = subprocess.run(["../build/motorctrl",
+                                         str(motor1['id']),
+                                         str(motor1['K_P']),
+                                         str(motor1['K_W']),
+                                         str(motor1['Pos']),
+                                         str(motor1['W']),
+                                         str(motor1['T']),
+                                         str(motor1['PID'])], capture_output=True, text=True)
+        for speed in np.arange(minSpeed, maxSpeed, speedStep):
+
+            print(f"speed: {cur_speed}, torque: {torque}")
+            cur_speed = speed
+            motor0['W'] = cur_speed
+
+            for _ in range(runtime):
+                output = subprocess.run(["../build/motorctrl",
                                          str(motor0['id']),
                                          str(motor0['K_P']),
                                          str(motor0['K_W']),
@@ -119,24 +113,6 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor0['W']),
                                          str(motor0['T']),
                                          str(motor0['PID'])], capture_output=True, text=True)
-        for torque in np.arange(minTorque, maxTorque, torqueStep):
-
-            print(f"speed: {cur_speed}, torque: {torque}")
-
-            motor1['T'] = torque
-
-            for _ in range(runtime):
-                # speed_adj_thread.kill()
-                # speed_adj_thread.wait()
-
-                output = subprocess.run(["../build/motorctrl",
-                                         str(motor1['id']),
-                                         str(motor1['K_P']),
-                                         str(motor1['K_W']),
-                                         str(motor1['Pos']),
-                                         str(motor1['W']),
-                                         str(motor1['T']), 
-                                         str(motor1['PID'])], capture_output=True, text=True)
 
                 time.sleep(0.3)
 
@@ -194,7 +170,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     time.sleep(3)
 
         print('Writing file to csv...')
-        result.to_csv('../data/sweep2_DC.csv')
+        result.to_csv('../data/sweep3_DC.csv')
 
     siglent.close()
 
