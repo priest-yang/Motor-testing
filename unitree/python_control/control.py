@@ -98,11 +98,22 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                                          str(motor1['W']),
                                          str(motor1['T']),
                                          str(motor1['PID'])], capture_output=True, text=True)
+        _ = subprocess.run(["../build/motorctrl",
+                            str(motor0['id']),
+                            str(motor0['K_P']),
+                            str(motor0['K_W']),
+                            str(motor0['Pos']),
+                            str(minSpeed),
+                            str(motor0['T']),
+                            str(0)], capture_output=True, text=True)
+
+        time.sleep(0.3)
+
         for speed in np.arange(minSpeed, maxSpeed, speedStep):
 
-            print(f"speed: {cur_speed}, torque: {torque}")
             cur_speed = speed
             motor0['W'] = cur_speed
+            print(f"speed: {cur_speed}, torque: {torque}")
 
             for _ in range(runtime):
                 output = subprocess.run(["../build/motorctrl",
