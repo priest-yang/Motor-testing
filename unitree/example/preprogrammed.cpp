@@ -12,7 +12,8 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
     std::string path_to_logging= "../data/driving_motor/logging.csv";
     // open the logging file
     std::ofstream csvFile(path_to_logging, std::ios::app);
-    if (!csvFile.is_open()) {
+    if (!csvFile.is_open()) {            serial_port.sendRecv(&cmd,&data);
+            usleep(2000);
         std::cerr << "Error opening the file!" << std::endl;
     }
 
@@ -30,7 +31,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error_accum = 0;
         double error = 0;
 
-        for (int iter = 0; iter < 8000000; iter++){
+        for (int iter = 0; iter < 1000; iter++){
             auto start_time = std::chrono::steady_clock::now();
 
             serial_port.sendRecv(&cmd,&data);
@@ -40,7 +41,7 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
             if (!data.correct){
                 int temp = 0;
                 while ((!data.correct) && temp < 3){
-                    usleep(1000);
+                    usleep(1000);;
                     serial_port.sendRecv(&cmd,&data);
                     if (data.correct){
                         break;
@@ -50,9 +51,9 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
                 return false;
             }
 
-//            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
-//                return true;
-//            }
+            if (std::abs((data.W - cmd.W) / cmd.W) <= 0.01 || std::abs(data.W - cmd.W) < 0.1){
+                return true;
+            }
 
             auto end_time = std::chrono::steady_clock::now();
 //            cout << "start time: " << start_time << " end time: " << end_time << endl;
@@ -77,12 +78,12 @@ bool PID_control(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         }
         // PID controller failed
         csvFile.close();
-        return true;
+        return false;
     }else{
         csvFile.close();
         return true;
     }
-
+;
 }
 
 void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
@@ -97,7 +98,7 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
         double error = 0;
 
 //        while(true){
-        for(int iter = 0; iter < 500000000; iter++){
+        for(int iter = 0; iter < 800; iter++){
 //            cout <<iter << endl;
             auto start_time = std::chrono::high_resolution_clock::now();
             serial_port.sendRecv(&cmd,&data);
@@ -132,11 +133,19 @@ void PID_impl(MotorCmd& cmd, MotorData& data, SerialPort& serial_port){
 //            cout << "Error: " << error << endl;
 //            cout << "accum_error: " << error_accum << endl;
 
+
             double Tor_fb =  K_P * error + K_I * error_accum;
+
 
             cmd.T = float(Tor_fb + Tor_ff);
             serial_port.sendRecv(&cmd,&data);
             usleep(2000);
+
+            if(std::abs(error_accum) == max_I){
+                serial_port.sendRecv(&cmd,&data);
+                usleep(5000);
+                return;
+            }
 //            std::cout <<  "motor.Temp: "   << data.Temp   << " ℃"  << std::endl;
 //            std::cout <<  "motor.W: "      << data.W      << " rad/s"<<std::endl;
 //            std::cout <<  "motor.T: "      << data.T      << " N.m" << std::endl;

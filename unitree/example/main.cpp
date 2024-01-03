@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
               PID_impl(cmd,data,serial);
       } else{
               serial.sendRecv(&cmd,&data);
-      }
+      };
 
       usleep(3000);
       serial.sendRecv(&cmd,&data);
