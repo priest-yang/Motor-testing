@@ -11,7 +11,7 @@ GEAR_RATIO = 6.33
 
 MIN_TORQUE = 0.5
 MAX_TORQUE = 2 # 4.5
-TORQUE_STEP = 0.5 # 0.05
+TORQUE_STEP = 0.1 # 0.05
 MIN_SPEED = - 1 * GEAR_RATIO
 MAX_SPEED = - 39 * GEAR_RATIO
 SPEED_STEP = - 1 * GEAR_RATIO
@@ -181,8 +181,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     time.sleep(3)
 
         print('Writing file to csv...')
-        # result.to_csv('../data/sweep3_current.csv')
-        result.to_csv('../data/sweep3_torque.csv')
+        result.to_csv('../data/sweep4_current.csv')
+        # result.to_csv('../data/sweep3_torque.csv')
 
     siglent.close()
 
