@@ -9,8 +9,8 @@ import re
 
 GEAR_RATIO = 6.33
 
-MIN_TORQUE = 1.5
-MAX_TORQUE = 2 # 4.5
+MIN_TORQUE = 0.1
+MAX_TORQUE = 0.5 # 4.5
 TORQUE_STEP = 0.1 # 0.05
 MIN_SPEED = - 1 * GEAR_RATIO
 MAX_SPEED = - 39 * GEAR_RATIO
@@ -43,6 +43,26 @@ def stop_motor():
     # print(output.stdout)
     print("stop motor (not implemented)")
 
+def slow_down(maxspeed, minspeed):
+    _ = subprocess.run(["../build/motorctrl",
+                        str(motor1['id']),
+                        str(motor1['K_P']),
+                        str(motor1['K_W']),
+                        str(motor1['Pos']),
+                        str(motor1['W']),
+                        str(0),
+                        str(motor1['PID'])], capture_output=True, text=True)
+    # for i in range(MAX_SPEED)
+    _ = subprocess.run(["../build/motorctrl",
+                        str(motor0['id']),
+                        str(motor0['K_P']),
+                        str(0.000005),
+                        str(motor0['Pos']),
+                        str(minspeed),
+                        str(motor0['T']),
+                        str(0)], capture_output=True, text=True)
+
+    time.sleep(1)
 
 def adjust_PD(current_speed):
     '''
@@ -90,6 +110,8 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
     pattern = r"[\s\S]+ ([-|\d]+)[\s\S]+ ([-|\d.]+)[\s\S]+ ([-|\d.]+)"
     for torque in np.arange(minTorque, maxTorque, torqueStep):
         motor1['T'] = torque
+
+        slow_down(minSpeed, maxSpeed)
         _ = subprocess.run(["../build/motorctrl",
                                          str(motor1['id']),
                                          str(motor1['K_P']),
@@ -181,7 +203,7 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     time.sleep(3)
 
         print('Writing file to csv...')
-        result.to_csv('../data/sweep6_current.csv')
+        result.to_csv('../data/sweep7_current.csv')
         # result.to_csv('../data/sweep5_torque.csv')
 
     siglent.close()
