@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import re
+import serial
+import struct
 
 GEAR_RATIO = 6.33
 
@@ -210,6 +212,13 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
 
 
 if __name__ == '__main__':
-    # stop_motor()
-    motor_test_runner()
+    # motor_test_runner()
+    ser = serial.Serial('/dev/ttyACM0', 115200)
+    ser.write(bytearray('abcdefgijk','ascii'))
 
+    bs = ser.readline()
+    print(bs[0:4])
+    value = struct.unpack('<hh', bs[0:4])
+
+    print(value[0])
+    print(value[1])
