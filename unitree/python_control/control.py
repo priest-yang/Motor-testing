@@ -64,29 +64,29 @@ def slow_down(maxspeed, minspeed):
 
     time.sleep(1)
 
-def adjust_PD(current_speed):
-    '''
-    Adjust K_P and K_W according to current speed
-    Input: current motor speed
-    Output: True if K_P and K_W are adjusted, False otherwise
-    '''
-    global motor0
-    if abs((abs(current_speed) - abs(motor0['W'])) / abs(motor0['W'])) > 0.2 and abs(current_speed) - abs(motor0['W']) > 3:
-        cur_kw = motor0['K_W']
-        motor0['K_W'] = motor0['K_W'] + 0.01
-        print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
-
-        _ = subprocess.run(["../build/motorctrl",
-                            str(motor0['id']),
-                            str(motor0['K_P']),
-                            str(motor0['K_W']),
-                            str(motor0['Pos']),
-                            str(motor0['W']),
-                            str(motor0['T']),
-                            str(motor0['PID'])], capture_output=True, text=True)
-        return True
-    else:
-        return False
+# def adjust_PD(current_speed):
+#     '''
+#     Adjust K_P and K_W according to current speed
+#     Input: current motor speed
+#     Output: True if K_P and K_W are adjusted, False otherwise
+#     '''
+#     global motor0
+#     if abs((abs(current_speed) - abs(motor0['W'])) / abs(motor0['W'])) > 0.2 and abs(current_speed) - abs(motor0['W']) > 3:
+#         cur_kw = motor0['K_W']
+#         motor0['K_W'] = motor0['K_W'] + 0.01
+#         print(f"adjust the K_W from {cur_kw} to {motor0['K_W']}")
+#
+#         _ = subprocess.run(["../build/motorctrl",
+#                             str(motor0['id']),
+#                             str(motor0['K_P']),
+#                             str(motor0['K_W']),
+#                             str(motor0['Pos']),
+#                             str(motor0['W']),
+#                             str(motor0['T']),
+#                             str(motor0['PID'])], capture_output=True, text=True)
+#         return True
+#     else:
+#         return False
 
 
 def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQUE, torqueStep: float = TORQUE_STEP,
@@ -194,13 +194,18 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     print(output.stdout)
                     stop_motor()
 
-                adjust_flag = adjust_PD(speed)
+                cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
+                cur_df['current'] = current # DC current into BLDC
 
-                if not adjust_flag:  # if K_P and K_W are not adjusted, then read voltage and record data
-                    cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
-                    result = pd.concat([result, cur_df], ignore_index=True)
-                else:
-                    time.sleep(3)
+                result = pd.concat([result, cur_df], ignore_index=True)
+
+                # adjust_flag = adjust_PD(speed)
+                #
+                # if not adjust_flag:  # if K_P and K_W are not adjusted, then read voltage and record data
+                #     cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
+                #     result = pd.concat([result, cur_df], ignore_index=True)
+                # else:
+                #     time.sleep(3)
 
         print('Writing file to csv...')
         result.to_csv('../data/sweep7_current.csv')
