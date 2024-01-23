@@ -195,9 +195,16 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
                     print("No match!!")
                     print(output.stdout)
                     stop_motor()
+                ser = serial.Serial('/dev/ttyACM0', 115200)
+                ser.write(bytearray('abcdefgijk', 'ascii'))
 
-                cur_df['voltage'] = siglent.query('MEAS:VOLT:DC?')
-                cur_df['current'] = current # DC current into BLDC
+                bs = ser.readline()
+                print(bs[0:4])
+                value = struct.unpack('<hh', bs[0:4])
+                print(value[0])
+                print(value[1])
+                cur_df['voltage'] = value[0]
+                cur_df['current'] = value[1]
 
                 result = pd.concat([result, cur_df], ignore_index=True)
 
@@ -217,13 +224,13 @@ def motor_test_runner(minTorque: float = MIN_TORQUE, maxTorque: float = MAX_TORQ
 
 
 if __name__ == '__main__':
-    # motor_test_runner()
-    ser = serial.Serial('/dev/ttyACM0', 115200)
-    ser.write(bytearray('abcdefgijk','ascii'))
-
-    bs = ser.readline()
-    print(bs[0:4])
-    value = struct.unpack('<hh', bs[0:4])
-
-    print(value[0])
-    print(value[1])
+    motor_test_runner()
+    # ser = serial.Serial('/dev/ttyACM0', 115200)
+    # ser.write(bytearray('abcdefgijk','ascii'))
+    #
+    # bs = ser.readline()
+    # print(bs[0:4])
+    # value = struct.unpack('<hh', bs[0:4])
+    #
+    # print(value[0])
+    # print(value[1])
